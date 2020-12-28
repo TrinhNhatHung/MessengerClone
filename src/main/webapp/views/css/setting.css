@@ -1,0 +1,353 @@
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: "proxima-nova", "Source Sans Pro", sans-serif;
+    font-size: 1em;
+    letter-spacing: 0.1px;
+    text-rendering: optimizeLegibility;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
+    -webkit-font-smoothing: antialiased;
+    background-color: #f5f5f5;
+}
+
+.error {
+    color: rgb(194, 32, 32) !important;
+}
+
+.frame {
+    width: 100%;
+    height: 100vh;
+    margin-top: 2%;
+    margin-bottom: 3%;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+
+.frame .side-panel {
+    float: left;
+    width: 20%;
+    height: 100%;
+    position: relative;
+}
+
+.frame .side-panel .profile {
+    width: 90%;
+    height: 40%;
+    background-color: white;
+    border-radius: 6px;
+    position: relative;
+}
+
+.frame .side-panel .profile img {
+    width: 43%;
+    border-radius: 50%;
+    margin-top: 17%;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.frame .side-panel .profile p {
+    display: inline;
+    position: absolute;
+    top: 63%;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgb(83, 83, 83);
+    font-weight: bold;
+    font-size: 1.23em;
+}
+
+.frame .side-panel .profile i {
+    position: absolute;
+    top: 83%;
+    left: 50%;
+    transform: translateX(-50%);
+    transform: scale(2);
+    color: rgb(83, 83, 83);
+}
+
+.frame .side-panel .profile .avatar {
+    position: relative;
+}
+
+.frame .side-panel .profile .avatar .box {
+    position: absolute;
+    top: 75%;
+    left: 50%;
+}
+
+.inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.inputfile+label {
+    max-width: 80%;
+    font-size: 1.25rem;
+    /* 20px */
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    padding: 0.625rem 1.25rem;
+    /* 10px 20px */
+}
+
+.no-js .inputfile+label {
+    display: none;
+}
+
+.inputfile:focus+label,
+.inputfile.has-focus+label {
+    outline: none;
+}
+
+.inputfile+label * {
+    /* pointer-events: none; */
+    /* in case of FastClick lib use */
+}
+
+.inputfile+label svg {
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    fill: currentColor;
+    margin-top: -0.25em;
+    /* 4px */
+    margin-right: 0.25em;
+    /* 4px */
+}
+
+.inputfile-4+label {
+    color: #32465a;
+}
+
+.inputfile-4:focus+label,
+.inputfile-4.has-focus+label,
+.inputfile-4+label:hover {
+    color: #32465a;
+}
+
+.inputfile-4+label figure {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #32465a;
+    display: block;
+    padding: 4px;
+    margin: 0 auto 10px;
+}
+
+.inputfile-4:focus+label figure,
+.inputfile-4.has-focus+label figure,
+.inputfile-4+label:hover figure {
+    background-color: #32465a;
+}
+
+.inputfile-4+label svg {
+    width: 100%;
+    height: 100%;
+    fill: #ffffff;
+}
+
+.main-panel {
+    width: 80%;
+    height: 100px;
+    float: left;
+}
+
+.main-panel .edit-component {
+    width: 100%;
+    background-color: white;
+    border-radius: 5px;
+    padding: 3%;
+}
+
+.main-panel .contact,
+.setting {
+    margin-top: 3%;
+}
+
+.head-of-component {
+    font-weight: bold;
+    font-size: 1.45em;
+    color: rgb(83, 83, 83);
+    display: inline-block;
+}
+
+.edit-info {
+    float: right;
+    margin-right: 1%;
+}
+
+.edit-info a {
+    font-size: 1.1em;
+    color: #32465a !important;
+}
+
+.edit-info i {
+    color: #32465a !important;
+}
+
+.edit-info a:hover {
+    color: #487cb1 !important;
+    text-decoration: underline !important;
+}
+
+.edit-info button {
+    background: none;
+    border: none;
+    outline: none;
+    font-size: 1.1em;
+    color: #32465a;
+}
+
+.edit-info button:hover {
+    color: #487cb1;
+    text-decoration: underline;
+}
+
+.info table {
+    width: 100%;
+}
+
+.info table td.label {
+    text-align: right;
+    margin-top: 4%;
+    color: #a9abaf;
+}
+
+.info table p,
+.info table input {
+    margin-left: 5%;
+    margin-top: 3%;
+    color: rgb(83, 83, 83);
+}
+
+.info table span {
+    margin-left: 5%;
+    color: rgb(83, 83, 83);
+}
+
+.info table input {
+    margin-top: 2%;
+    outline: none;
+}
+
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(52, 54, 66, 0.9);
+    z-index: 3;
+    overflow-y: auto;
+    cursor: pointer;
+    visibility: hidden;
+    opacity: 0;
+    -webkit-transition: opacity 0.3s 0, visibility 0 0.3s;
+    -moz-transition: opacity 0.3s 0, visibility 0 0.3s;
+    transition: opacity 0.3s 0, visibility 0 0.3s
+}
+
+.popup.is-visible {
+    visibility: visible;
+    opacity: 1;
+    -webkit-transition: opacity 0.3s 0, visibility 0 0;
+    -moz-transition: opacity 0.3s 0, visibility 0 0;
+    transition: opacity 0.3s 0, visibility 0 0;
+}
+
+.popup .popup-container {
+    border-radius: 5px;
+    background-color: white;
+    display: inline-block;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.popup .popup-container.form-person-detail-container {
+    width: 420px;
+}
+
+.popup .popup-container .form {
+    width: 82%;
+    margin-left: 9%;
+    margin-bottom: 10%;
+    margin-top: 10%;
+}
+
+.form-contact-container {
+    height: 350px;
+    width: 300px;
+}
+
+.popup .popup-container .form button {
+    padding: 15px;
+    border-radius: 5px;
+    border: none;
+    background-color: #32465a;
+    color: white;
+    margin-top: 10%;
+    position: relative;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%);
+}
+
+.popup .popup-container h1 {
+    display: inline-block;
+    font-weight: bold;
+    font-size: 1.4em;
+    color: rgb(83, 83, 83);
+    margin-top: 13px;
+    margin-left: 18px;
+}
+
+.popup .popup-container i {
+    margin-top: 8px;
+    margin-right: 8px;
+    float: right;
+    color: rgb(83, 83, 83);
+    font-size: medium;
+}
+
+.popup .popup-container .row input,
+.popup .popup-container .row select {
+    width: 100%;
+    margin-top: 5%;
+    height: 35px;
+    border-radius: 3px;
+    border: solid rgb(83, 83, 83) 1px;
+}
+
+.popup .popup-container .row p {
+    margin-top: 7%;
+}
+
+.popup .popup-container .row p.address {
+    margin-top: 15%;
+}
+
+.popup .popup-container .row .input-date {
+    position: relative;
+}
+
+.popup .popup-container .row .input-date i {
+    position: absolute;
+    top: 50%;
+    right: 5px;
+    transform: translate(0, -50%);
+}
