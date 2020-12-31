@@ -110,4 +110,26 @@ public class ChatDAO {
 			return usersChats;
 		}
 	}
+	
+	public static boolean sendMessage (UsersChat usersChat) {
+		try {
+			Connection connection = ConnectionDB.getConnection();
+			String sql = "INSERT INTO users_chat (sender, receiver, content, status, time) VALUES (?,?,?,?,?)";
+			PreparedStatement statement = connection.prepareStatement(sql);
+			statement.setInt(1, usersChat.getSenderId());
+			statement.setInt(2, usersChat.getReceiverId());
+			statement.setString(3, usersChat.getContent());
+			statement.setString(4, "sent");
+			statement.setLong(5, usersChat.getTime());
+			int rowAffected = statement.executeUpdate();
+			if (rowAffected == 0) {
+				return false;
+			} else {
+				return true;
+			}
+		} catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 }

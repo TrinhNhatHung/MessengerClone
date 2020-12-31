@@ -14,13 +14,14 @@ import javax.websocket.server.ServerEndpoint;
 
 import com.google.gson.Gson;
 
+import dao.ChatDAO;
 import model.UsersChat;
 
-@ServerEndpoint (value = "/server")
+@ServerEndpoint(value = "/server")
 public class Server {
-	
+
 	private static List<Session> users = new ArrayList<>();
-	
+
 	@OnOpen
 	public void handleOpen(Session userSession) {
 		users.add(userSession);
@@ -34,8 +35,13 @@ public class Server {
 			userSession.getUserProperties().put("id", kindMessage.getSession());
 			sendOnlineUsers(users);
 		} else {
-//			UsersChat chat = kindMessage.getUsersChat();
-//			System.out.println(chat.toString());
+			UsersChat usersChat = kindMessage.getUsersChat();
+			boolean status = ChatDAO.sendMessage(usersChat);
+			if (status) {
+				sendMessage(usersChat.getSenderId(),usersChat.getReceiverId());
+			} else {
+				notifySendFail(userSession, usersChat.getContent());
+			}
 		}
 	}
 
@@ -47,17 +53,45 @@ public class Server {
 
 	@OnError
 	public void handleError(Throwable t) {
-		
+
 	}
 	
-	public void sendOnlineUsers (List<Session> users) {
-		try {
-			List<Integer> onlineUsersId = users.stream().map(user -> (Integer)user.getUserProperties().get("id")).distinct()
-					    .collect(Collectors.toList());
+	public void sendMessage (int senderId,int receiverId) {
+		users.forEach(session -> {
+			if ((int)session.getUserProperties().get("id") == receiverId) {
+				try {
+					session.getBasicRemote().sendText("{\"notification\": \"hasNewMessage\"}");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 			
+			if ((int)session.getUserProperties().get("id") == senderId) {
+				try {
+					session.getBasicRemote().sendText("{\"notification\": \"sendSuccessfull\"}");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+	
+	public void notifySendFail (Session session,String contentMessage) {
+		try {
+			session.getBasicRemote().sendText("{\"notification\": \"sendFail\",\"content\": \"" + contentMessage +"\"}");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void sendOnlineUsers(List<Session> users) {
+		try {
+			List<Integer> onlineUsersId = users.stream().map(user -> (Integer) user.getUserProperties().get("id"))
+					.distinct().collect(Collectors.toList());
+
 			onlineUsersId = onlineUsersId.stream().distinct().collect(Collectors.toList());
 			String onlineUsersIdJson = new Gson().toJson(onlineUsersId);
-			
+
 			users.forEach(user -> {
 				try {
 					user.getBasicRemote().sendText(onlineUsersIdJson);
@@ -69,12 +103,12 @@ public class Server {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private class KindMessage {
 		private String kind;
 		private UsersChat usersChat;
 		private int session;
-		
+
 		public KindMessage() {
 			super();
 		}
@@ -109,6 +143,6 @@ public class Server {
 		public void setSession(int session) {
 			this.session = session;
 		}
-		
+
 	}
 }

@@ -103,9 +103,25 @@
             $(".contacts").toggleClass("expanded");
         });
         
-        $(".messages").animate({
-            scrollTop: $(document).height()
-        }, "fast");
+        setTimeout(function(){
+        	$("#messages").animate({
+                scrollTop: $('#messages').prop("scrollHeight")
+            }, 1);
+        }, 200);
+       
+        	
+           
+        window.onbeforeunload = function() {
+        	localStorage.setItem("inputMessage", $('.message-input input').val());
+        }
+        
+        window.onload = function() {
+            let messageInput = localStorage.getItem("inputMessage");
+            if (name !== null) {
+            	$('.message-input input').val(messageInput);
+            	localStorage.removeItem("inputMessage");
+            }
+        }
     </script>
     
     <script>
@@ -121,9 +137,18 @@
 	</script>
 	
     <script type="text/babel">
-         function renderListContact (){
-		 	ReactDOM.render(<ListContact contacts={listContact} withId={withId} onlineUsers ={onlineUsers}/>, document.getElementById("contacts"));
-		 }
+		  $('.search input').on('input', function(event) { 
+                 let textSearch = $(event.target).val();
+                 textSearch = textSearch.trim() ; 
+				 let listContactSearch = listContact.filter(function(contact) { 
+							let username = contact.user.username; 
+							if (username.includes(textSearch)) { 
+									return true; 
+							}
+				 }); 
+         		 ReactDOM.render( <ListContact contacts={listContactSearch} withId={withId} onlineUsers={onlineUsers} />, document.getElementById("contacts")); 
+         });
+         
          ReactDOM.render(
         <Messages messages={listMessages} currentUserProfile={currentUserProfile} withUserProfile={withUserProfile} currentId={currentId} withId={withId} />, document.getElementById("messages"));
     </script>
@@ -154,11 +179,36 @@
 		var onlineUsers = [];
 		function processMessage(message) {
 			let messageObj = JSON.parse(message.data);
-			if (message.sender == undefined){
+			if (messageObj.notification == undefined){
 				onlineUsers = messageObj;	
-				ReactDOM.render(
-						<ListContact contacts={listContact} withId={withId} onlineUsers ={onlineUsers}/>, document.getElementById("contacts"));
+				let textSearch = $('.search input').val();
+                textSearch = textSearch.trim() ; 
+				let listContactSearch = listContact.filter(function(contact) { 
+							let username = contact.user.username; 
+							if (username.includes(textSearch)) { 
+									return true; 
+							}
+				}); 
+         		 ReactDOM.render( <ListContact contacts={listContactSearch} withId={withId} onlineUsers={onlineUsers} />, document.getElementById("contacts")); 
 			}
+			
+			if (messageObj.notification == 'hasNewMessage' || messageObj.notification == 'sendSuccessfull'){
+				location.reload();
+			} else if (messageObj.notification == 'sendFail') {
+				let messageError = messageObj.content;
+			    listMessages.push({
+					senderId : '${currentUser.id}',
+					receiverId : '${withUser.id}',
+					content : messageError,
+		            isError: true
+				});
+				ReactDOM.render(
+                <Messages messages={listMessages} currentUserProfile={currentUserProfile} withUserProfile={withUserProfile} currentId={currentId} withId={withId} />, document.getElementById("messages"));
+				$("#messages").animate({
+                    scrollTop: $('#messages').prop("scrollHeight")
+                }, 1);
+			}
+			
 		}				
 		function processClose() {
 			
@@ -175,10 +225,18 @@
 		
 		function getMessage (){
 			let content = $(".message-input input").val();
+			if ($.trim(content) == '') {
+                return undefined;
+            }
+			let now = new Date();
+			let nowMillis = now.getTime();
 			let msgObj = {
 				 kind : "message",
 				 usersChat : {
-					 sender : "<%=username %>"
+					 senderId : '${currentUser.id}',
+					 receiverId : '${withUser.id}',
+					 content : content,
+					 time : nowMillis
 				 }
 			}
 			let message = JSON.stringify(msgObj);
@@ -187,13 +245,19 @@
 		
 		 $('.submit').click(function() {	
 			   let message = getMessage ();
-	           sendMessage(message);
+			   if (message != undefined) {
+	               sendMessage(message);
+				   $(".message-input input").val('');
+			   }
 	     });
 		 
 		 $(window).on('keydown', function(e) {
 	            if (e.which == 13) {	            	
 	            	let message = getMessage ();
-	 	            sendMessage(message);
+					if (message != undefined) {
+	                     sendMessage(message);
+						 $(".message-input input").val('');
+			        }
 	                return false;
 	            }
 	      });	
