@@ -38,10 +38,14 @@ body {
     background-color: white;
     border-radius: 6px;
     position: relative;
+    -moz-box-shadow: 3px 3px 5px 0px rgb(139, 139, 139);
+    -webkit-box-shadow: 3px 3px 5px 0px rgb(139, 139, 139);
+    box-shadow: 3px 3px 5px 0px rgb(139, 139, 139);
 }
 
 .frame .side-panel .profile img {
-    width: 43%;
+    width: 110px;
+    height: 110px;
     border-radius: 50%;
     margin-top: 17%;
     position: relative;
@@ -75,8 +79,8 @@ body {
 
 .frame .side-panel .profile .avatar .box {
     position: absolute;
-    top: 75%;
-    left: 50%;
+    top: 80%;
+    left: 57%;
 }
 
 .inputfile {
@@ -89,7 +93,7 @@ body {
 }
 
 .inputfile+label {
-    max-width: 80%;
+    max-width: 100%;
     font-size: 1.25rem;
     /* 20px */
     font-weight: 700;
@@ -98,7 +102,7 @@ body {
     cursor: pointer;
     display: inline-block;
     overflow: hidden;
-    padding: 0.625rem 1.25rem;
+    padding: 1px 3px;
     /* 10px 20px */
 }
 
@@ -170,6 +174,9 @@ body {
     background-color: white;
     border-radius: 5px;
     padding: 3%;
+    -moz-box-shadow: 3px 3px 5px 0px rgb(139, 139, 139);
+    -webkit-box-shadow: 3px 3px 5px 0px rgb(139, 139, 139);
+    box-shadow: 3px 3px 5px 0px rgb(139, 139, 139);
 }
 
 .main-panel .contact,

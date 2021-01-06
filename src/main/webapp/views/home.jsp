@@ -36,11 +36,11 @@
             <div class="profile">
                 <div class="wrap">
                 <%
-                	User currentUser = (User)request.getAttribute("currentUser");
-                    String currentUserProfile = currentUser.getProfile();
-                	if (currentUserProfile == null){
-                		currentUserProfile = "views/images/avatar-default.png";
-                	}
+                User currentUser = (User) request.getAttribute("currentUser");
+				String currentUserProfile = "views/images/avatar-default.png";
+				if (currentUser.getProfile() != null) {
+					currentUserProfile = "avatar/" + currentUser.getProfile();
+				}
                 %>
                     <img class="profile-img" src="<%=currentUserProfile %>" alt="">
                     <p>${currentUser.username}</p>
@@ -76,11 +76,12 @@
         <div class="content">
             <div class="contact-profile">
                 <%
+                
                 	 User withUser = (User)request.getAttribute("withUser");
-                     String withUserProfile = withUser.getProfile();
-                	if (withUserProfile == null){
-                		withUserProfile = "views/images/avatar-default.png";
-                	}
+                     String withUserProfile = "views/images/avatar-default.png";
+                	 if (withUser.getProfile() != null){
+                		withUserProfile = "avatar/" + withUser.getProfile();
+                	 }
                 %>
                 <img src="<%=withUserProfile%>" alt="">
                 <p>${withUser.username}</p>

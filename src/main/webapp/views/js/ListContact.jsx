@@ -28,7 +28,7 @@ function Contact (props){
 
     let src = "views/images/avatar-default.png"
     if (props.contact.user.profile != undefined ){
-        src = props.contact.user.profile;
+        src = 'avatar/' + props.contact.user.profile;
     }
 
     let status = "contact-status";
@@ -38,8 +38,13 @@ function Contact (props){
 
   let href = "/webchat/home" + "?with=" + props.contact.user.id;
 
+  let hasActive = "contact";
+  if (props.withId == props.contact.user.id) {
+    hasActive += " active";
+  }
+
   return (
-    <li className="contact">
+    <li className={hasActive}>
       <a href={href}>
         <div className="wrap">
           <span className={status}></span>

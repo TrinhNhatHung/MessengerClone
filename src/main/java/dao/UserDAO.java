@@ -125,6 +125,10 @@ public class UserDAO {
 					sql += "date_of_birth=" + "'" + user.getDateOfBirth() + "',";
 				}
 				
+				if (user.getProfile() != null) {
+					sql += "profile=" + "'" + user.getProfile() + "',";
+				}
+				
 				sql = sql.substring(0, sql.length()-1);
 				sql += "WHERE id = ?";
 				
@@ -141,4 +145,5 @@ public class UserDAO {
 				return false;
 			}
 	}
+	
 }

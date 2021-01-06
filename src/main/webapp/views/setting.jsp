@@ -36,6 +36,8 @@
 
 <link rel="stylesheet" href="views/css/setting.css">
 
+<link rel="stylesheet" href="views/css/notify.css">
+
 <script src="https://unpkg.com/react@17/umd/react.production.min.js"
 	crossorigin></script>
 <script
@@ -50,24 +52,26 @@
 				<div class="avatar">
 					<%
 						User currentUser = (User) request.getAttribute("currentUser");
-						String currentUserProfile = currentUser.getProfile();
-						if (currentUserProfile == null) {
-							currentUserProfile = "views/images/avatar-default.png";
+						String currentUserProfile = "views/images/avatar-default.png";
+						if (currentUser.getProfile() != null) {
+							currentUserProfile = "avatar/" + currentUser.getProfile();
 						}
 					%>
 					<img src="<%=currentUserProfile%>" alt="">
 					<div class="box">
-						<input type="file" name="file-5[]" id="file-5"
-							class="inputfile inputfile-4"
-							data-multiple-caption="{count} files selected" multiple /> <label
-							for="file-5">
-							<figure>
-								<svg xmlns="http://www.w3.org/2000/svg" width="20" height="17"
-									viewBox="0 0 20 17">
+						<form id="set-avatar" action="<%=request.getContextPath()%>/upload-avatar" method="post" enctype="multipart/form-data">
+							<input onchange="submitAvatar(event)" type="file" name="file-5[]" id="file-5"
+								class="inputfile inputfile-4"
+								data-multiple-caption="{count} files selected" multiple /> <label
+								for="file-5">
+								<figure>
+									<svg xmlns="http://www.w3.org/2000/svg" width="20" height="17"
+										viewBox="0 0 20 17">
 									<path
-										d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" /></svg>
-							</figure>
-						</label>
+											d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" /></svg>
+								</figure>
+							</label>
+						</form>
 					</div>
 				</div>
 				<p>${currentUser.username}</p>
@@ -158,15 +162,18 @@
 							</colgroup>
 							<tr class="old-pass-row">
 								<td class="label"><label for="">Password</label></td>
-								<td><input type="password" class="old-pass"><span class="error"></span></td>
+								<td><input type="password" class="old-pass"><span
+									class="error"></span></td>
 							</tr>
 							<tr class="new-pass-row">
 								<td class="label"><label for="">New password</label></td>
-								<td><input type="password" name="password" class="new-pass"><span class="error"></span></td>
+								<td><input type="password" name="password" class="new-pass"><span
+									class="error"></span></td>
 							</tr>
 							<tr class="retype-new-pass-row">
 								<td class="label"><label for="">Retype password</label></td>
-								<td><input type="password" class="retype-new-pass"><span class="error"></span></td>
+								<td><input type="password" class="retype-new-pass"><span
+									class="error"></span></td>
 							</tr>
 						</table>
 					</div>
@@ -253,6 +260,10 @@
 			</div>
 		</div>
 	</div>
+	<script src="views/js/setting.js"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	<script src="views/js/notify.js"></script>
 	<script>
 		if ('false' == '<%=request.getParameter("updateInfo")%>') {
 			alert("Update failed");
@@ -261,20 +272,35 @@
 	            let oldPass = $('.change-pass-form .old-pass').val();
 	            let newPass = $('.change-pass-form .new-pass').val();
 	            let retypePass = $('.change-pass-form .retype-new-pass').val();
-	            if (oldPass != '<%=currentUser.getPassword()%>'){
-	            	$('.change-pass-form .old-pass-row .error').html('* Not correct');
-	            	$('.change-pass-form .retype-new-pass-row .error').html('');
-	            	return false;
-	            }
-	            
-	            if (newPass != retypePass) {
-	            	$('.change-pass-form .old-pass-row .error').html('');
-	            	$('.change-pass-form .retype-new-pass-row .error').html('* Not correct');
-	            	return false;
-	            }
-	            return true;
-	       });
+	            if (oldPass != '<%=currentUser.getPassword()%>') {
+						$('.change-pass-form .old-pass-row .error').html(
+								'* Not correct');
+						$('.change-pass-form .retype-new-pass-row .error')
+								.html('');
+						return false;
+					}
+
+					if (newPass != retypePass) {
+						$('.change-pass-form .old-pass-row .error').html('');
+						$('.change-pass-form .retype-new-pass-row .error')
+								.html('* Not correct');
+						return false;
+					}
+					return true;
+				});
+		 
+		 function submitAvatar(event){
+			 $('#set-avatar').trigger('submit');
+		 }
+		 
+		 if ('false' == '<%=request.getParameter("uploadAvatar")%>'){
+			 notify('error', 'Error', 'Update avatar failed.');
+		 } 
+		 
+		 if ('true' == '<%=request.getParameter("uploadAvatar")%>'){
+			 notify('success', 'Success', 'Update avatar successed.');
+		 }
 	</script>
-	<script src="views/js/setting.js"></script>
+	
 </body>
 </html>

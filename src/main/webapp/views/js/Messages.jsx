@@ -20,14 +20,19 @@ class Messages extends React.Component {
 
 function Message(props) {
     let kind = "sent";
-    let srcProfile = props.currentUserProfile;
+    let srcProfile = 'views/images/avatar-default.png';
     if (props.currentId != props.message.senderId) {
         kind = "replies";
-        srcProfile = props.withUserProfile;
+        if (props.withUserProfile != ''){
+            srcProfile = 'avatar/' + props.withUserProfile;
+        }
+    } else {
+        kind = "sent";
+        if (props.currentUserProfile != ''){
+            srcProfile = 'avatar/' + props.currentUserProfile;
+        }
     }
-    if (srcProfile == '') {
-        srcProfile = 'views/images/avatar-default.png'
-    }
+    
     if (props.message.isError) {
         return (
             <li className={kind}>
