@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>${currentUser.username}</title>
 <link rel="stylesheet" href="views/css/jquery-ui.css">
 <link
 	href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
@@ -62,7 +62,7 @@
 						<form id="set-avatar" action="<%=request.getContextPath()%>/upload-avatar" method="post" enctype="multipart/form-data">
 							<input onchange="submitAvatar(event)" type="file" name="file-5[]" id="file-5"
 								class="inputfile inputfile-4"
-								data-multiple-caption="{count} files selected" multiple /> <label
+								data-multiple-caption="{count} files selected"/> <label
 								for="file-5">
 								<figure>
 									<svg xmlns="http://www.w3.org/2000/svg" width="20" height="17"
@@ -288,6 +288,17 @@
 					}
 					return true;
 				});
+		 
+		 $('#set-avatar').on('submit', (event) => {
+			 let type = $('#file-5')[0].files[0].type;
+			 type = type.substring(0, type.indexOf('/'));
+			 if (type == 'image'){
+				 return true;
+			 } else {
+				 notify('error', 'Error', 'File upload is not image.');
+				 return false;
+			 }
+		 })
 		 
 		 function submitAvatar(event){
 			 $('#set-avatar').trigger('submit');

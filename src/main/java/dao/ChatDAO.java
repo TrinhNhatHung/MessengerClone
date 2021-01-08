@@ -10,7 +10,8 @@ import java.util.List;
 import model.ItemChat;
 import model.User;
 import model.UsersChat;
-import model.ItemChat.KindLastMessage;
+import model.UsersChat.TypeMessage;
+import model.ItemChat.KindMessage;
 import model.ItemChat.StatusMessage;
 
 public class ChatDAO {
@@ -31,7 +32,7 @@ public class ChatDAO {
 			
 			for (Integer idChatWith : listChatWith) {
 				sql = "SELECT userSender.username as senderName ,userSender.id as senderId, userSender.profile as senderProfile, \r\n" + 
-						"      userReceiver.username as receiverName ,userReceiver.id as receiverId, userReceiver.profile as receiverProfile,content,status,time \r\n" + 
+						"      userReceiver.username as receiverName ,userReceiver.id as receiverId, userReceiver.profile as receiverProfile,content,status,type,time \r\n" + 
 						"FROM users_chat \r\n" + 
 						"JOIN user as userSender ON users_chat.sender = userSender.id \r\n" + 
 						"JOIN user as userReceiver ON users_chat.receiver = userReceiver.id \r\n" + 
@@ -47,15 +48,15 @@ public class ChatDAO {
 					senderId = resultSet.getInt("senderId");
 					String profifileItemChat = "";
 					String nameItemChat = "";
-					KindLastMessage kindLastMessageItemChat = null;
+					KindMessage kindLastMessageItemChat = null;
 					if (senderId == id) {
 						 profifileItemChat = resultSet.getString("receiverProfile");
 						 nameItemChat = resultSet.getString("receiverName");
-						 kindLastMessageItemChat = KindLastMessage.SENT;
+						 kindLastMessageItemChat = KindMessage.SENT;
 					} else {
 						 profifileItemChat = resultSet.getString("senderProfile");
 						 nameItemChat = resultSet.getString("senderName");
-						 kindLastMessageItemChat = KindLastMessage.REPLIES;
+						 kindLastMessageItemChat = KindMessage.REPLIES;
 					}
 					
 					User user = User.builder().id(idChatWith).profile(profifileItemChat)
@@ -69,7 +70,12 @@ public class ChatDAO {
 					} else {
 						statusMessage = StatusMessage.SEEN;
 					}
-					itemChats.add(new ItemChat(user,content , kindLastMessageItemChat,statusMessage , time));
+					
+					TypeMessage type = TypeMessage.TEXT;
+					if (TypeMessage.IMAGE.getType().equals(resultSet.getString("type"))) {
+						type = TypeMessage.IMAGE;
+					}
+					itemChats.add(new ItemChat(user,content , kindLastMessageItemChat,statusMessage , time, type));
 				}
 			}
 			return itemChats;
@@ -99,9 +105,17 @@ public class ChatDAO {
 				if ("seen".equals(resultSet.getString("status"))) {
 					statusMessage = StatusMessage.SEEN;
 				}
+				TypeMessage type = TypeMessage.TEXT;
+				if (TypeMessage.IMAGE.getType().equals(resultSet.getString("type"))) {
+					type = TypeMessage.IMAGE;
+				}
+				
+				if (TypeMessage.FILE.getType().equals(resultSet.getString("type"))) {
+					type = TypeMessage.FILE;
+				}
 				long time = resultSet.getLong("time");
 				UsersChat usersChat = UsersChat.builder().senderId(senderId).receiverId(receiverId).content(content)
-						               .status(statusMessage).time(time).build();
+						               .status(statusMessage).time(time).type(type).build();
 			    usersChats.add(usersChat);
 			}
 			return usersChats;
@@ -114,13 +128,14 @@ public class ChatDAO {
 	public static boolean sendMessage (UsersChat usersChat) {
 		try {
 			Connection connection = ConnectionDB.getConnection();
-			String sql = "INSERT INTO users_chat (sender, receiver, content, status, time) VALUES (?,?,?,?,?)";
+			String sql = "INSERT INTO users_chat (sender, receiver, content, status, time, type) VALUES (?,?,?,?,?,?)";
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setInt(1, usersChat.getSenderId());
 			statement.setInt(2, usersChat.getReceiverId());
 			statement.setString(3, usersChat.getContent());
 			statement.setString(4, "sent");
 			statement.setLong(5, usersChat.getTime());
+			statement.setString(6, usersChat.getType());
 			int rowAffected = statement.executeUpdate();
 			if (rowAffected == 0) {
 				return false;

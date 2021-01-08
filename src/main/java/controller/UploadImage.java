@@ -2,15 +2,8 @@ package controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Paths;
-import java.util.Calendar;
 import java.util.List;
 
-import javax.naming.ldap.Rdn;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -35,7 +28,7 @@ public class UploadImage  extends HttpServlet{
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		doPost(req, resp);
+		resp.sendError(404);
 	}
 	
 	@Override

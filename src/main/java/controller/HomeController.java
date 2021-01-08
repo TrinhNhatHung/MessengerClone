@@ -42,7 +42,12 @@ public class HomeController extends HttpServlet {
 		String listItemChats = gson.toJson(itemChats);
 		req.setAttribute("listItemChats", listItemChats);
 		
-		int with = itemChats.get(0).getUser().getId();
+		int with =0;
+		
+		if (itemChats.size() > 0) {
+			with = itemChats.get(0).getUser().getId();									
+		} 
+		
 		if (req.getParameter("with") != null) {
 			try {
 				with = Integer.parseInt(req.getParameter("with"));
@@ -60,7 +65,7 @@ public class HomeController extends HttpServlet {
 		usersChats.sort(nullsFirst(comparing(UsersChat::getTime)));
 		String listUserChats = gson.toJson(usersChats);
 		req.setAttribute("listUserChats", listUserChats);
-		
+	
 		RequestDispatcher rd = req.getRequestDispatcher("/views/home.jsp");
 		rd.forward(req, resp);
 	}

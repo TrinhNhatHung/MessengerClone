@@ -61,8 +61,8 @@
 			    }			   			   
 			%>
 			<form name="login" action="<%= request.getContextPath()%>/signin" method="post">
-				<input type="text" name="username" placeholder="Username" value="<%=username%>" required="">
-				<input type="password" name="password" placeholder="Password" value="<%=password%>" required="">
+				<input type="text" name="username" placeholder="Username" value="<%=username%>" required="" spellcheck="false">
+				<input type="password" name="password" placeholder="Password" value="<%=password%>" required="" spellcheck="false">
 			
 			<% 
 				if (request.getParameter("invalid") != null){

@@ -77,11 +77,11 @@
 				}
 			%>
 			<form action="<%= request.getContextPath()%>/signup" method="post">
-				<input type="text" name="name" placeholder="Name" value="<%=name %>" required="">
-				<input type="password" name="password" placeholder="Password" value="<%=password %>" required=""> 
-				<input type="text" name="email" placeholder="Email" value="<%=email %>" required=""> 
-				<input type="text" name="gender" placeholder="Gender" value="<%=gender %>" required=""> 
-				<input type="text" name="phonenumber" placeholder="Phone Number" value="<%=phone %>" required="">
+				<input type="text" name="name" placeholder="Name" value="<%=name %>" required="" spellcheck="false">
+				<input type="password" name="password" placeholder="Password" value="<%=password %>" required="" spellcheck="false"> 
+				<input type="text" name="email" placeholder="Email" value="<%=email %>" required="" spellcheck="false"> 
+				<input type="text" name="gender" placeholder="Gender" value="<%=gender %>" required="" spellcheck="false"> 
+				<input type="text" name="phonenumber" placeholder="Phone Number" value="<%=phone %>" required="" spellcheck="false">
 			<%
 			if (request.getParameter("error") != null){
 				out.print("<p style='color:red;font-size:13px'>Register failed</p><br>");

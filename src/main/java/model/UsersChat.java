@@ -9,6 +9,7 @@ public class UsersChat {
 	private int  receiverId;
 	private String receiverName;
 	private String content;
+	private String type;
 	private StatusMessage status;
 	private long time;
 
@@ -25,6 +26,7 @@ public class UsersChat {
 		this.content = builder.content;
 		this.status = builder.status;
 		this.time = builder.time;
+		this.type = builder.type;
 	}
 	
 	
@@ -52,6 +54,10 @@ public class UsersChat {
 	public String getContent() {
 		return content;
 	}
+	
+	public String getType() {
+		return type;
+	}
 
 	public StatusMessage getStatus() {
 		return status;
@@ -72,6 +78,7 @@ public class UsersChat {
 		private int  receiverId;
 		private String receiverName;
 		private String content;
+		private String type;
 		private StatusMessage status;
 		private long time;
 		
@@ -105,6 +112,11 @@ public class UsersChat {
 			return this;
 		}
 		
+		public Builder type (TypeMessage type) {
+			this.type = type.getType();
+			return this;
+		}
+		
 		public Builder status (StatusMessage statusMessage) {
 			this.status = statusMessage;
 			return this;
@@ -117,6 +129,22 @@ public class UsersChat {
 		
 		public UsersChat build() {
 			return new UsersChat(this);
+		}
+	}
+	
+	public enum TypeMessage {
+		TEXT("text"),
+		FILE ("file"),
+	    IMAGE("image");
+	    
+	    private String type;
+
+		private TypeMessage(String type) {
+			this.type = type;
+		}
+
+		public String getType() {
+			return type;
 		}
 	}
 }

@@ -1,23 +1,27 @@
 package model;
 
+import model.UsersChat.TypeMessage;
+
 public class ItemChat {
 	private User user;
 	private String lastMessage;
 	private long time;
-	private KindLastMessage kindLastMessage;
+	private KindMessage kindLastMessage;
 	private StatusMessage statusMessage;
+	private String typeLastMessage;
 	
 	public ItemChat() {
 		super();
 	}
 
-	public ItemChat(User user, String lastMessage, KindLastMessage kindLastMessage,StatusMessage statusMessage ,long time) {
+	public ItemChat(User user, String lastMessage, KindMessage kindMessage,StatusMessage statusMessage ,long time, TypeMessage typeMessage) {
 		super();
 		this.user = user;
 		this.lastMessage = lastMessage;
-		this.kindLastMessage = kindLastMessage;
+		this.kindLastMessage = kindMessage;
 		this.time = time;
 		this.statusMessage = statusMessage;
+		this.typeLastMessage = typeMessage.getType();
 	}
 
 	public User getUser() {
@@ -36,12 +40,12 @@ public class ItemChat {
 		this.lastMessage = lastMessage;
 	}
 
-	public KindLastMessage getKindLastMessage() {
+	public KindMessage getKindLastMessage() {
 		return kindLastMessage;
 	}
 
-	public void setKindLastMessage(KindLastMessage kindLastMessage) {
-		this.kindLastMessage = kindLastMessage;
+	public void setKindLastMessage(KindMessage kindMessage) {
+		this.kindLastMessage = kindMessage;
 	}
 
 	public long getTime() {
@@ -60,10 +64,16 @@ public class ItemChat {
 	public void setStatusMessage(StatusMessage statusMessage) {
 		this.statusMessage = statusMessage;
 	}
+	
+	public String getTypeLastMessage() {
+		return typeLastMessage;
+	}
 
+	public void setTypeLastMessage(String typeLastMessage) {
+		this.typeLastMessage = typeLastMessage;
+	}
 
-
-	public enum KindLastMessage {
+	public enum KindMessage {
 		SENT, REPLIES
 	}
 	

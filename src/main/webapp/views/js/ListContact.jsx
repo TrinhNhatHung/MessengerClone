@@ -17,10 +17,19 @@ class ListContact extends React.Component {
 function Contact (props){
     let kind = props.contact.kindLastMessage;
     let msg = props.contact.lastMessage;
+    if (props.contact.typeLastMessage == 'file'){
+         msg = props.contact.lastMessage.substring (0,props.contact.lastMessage.indexOf("/"));
+    }
     let style = {color: 'gray'}
     if (kind == "SENT"){
         msg = "You: " + msg;
+        if (props.contact.typeLastMessage == 'image'){
+           msg = "You has sent an image ";
+        }
     } else {
+         if (props.contact.typeLastMessage == 'image'){
+            msg = "has sent you an image ";
+         }
          if (props.contact.statusMessage == "SENT" && props.withId != props.contact.user.id){
              style = {color: 'white',fontWeight:'bold'}
          }

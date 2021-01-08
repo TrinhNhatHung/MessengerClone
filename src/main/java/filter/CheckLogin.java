@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-@WebFilter(urlPatterns = {"/home","/setting"})
+@WebFilter(urlPatterns = {"/home","/setting","/addContact"})
 public class CheckLogin implements Filter {
 
 	public void init(FilterConfig filterConfig) throws ServletException {

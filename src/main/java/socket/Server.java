@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 
 import dao.ChatDAO;
 import model.UsersChat;
+import model.UsersChat.TypeMessage;
 
 @ServerEndpoint(value = "/server")
 public class Server {
@@ -36,11 +37,15 @@ public class Server {
 			sendOnlineUsers(users);
 		} else {
 			UsersChat usersChat = kindMessage.getUsersChat();
-			boolean status = ChatDAO.sendMessage(usersChat);
-			if (status) {
-				sendMessage(usersChat.getSenderId(),usersChat.getReceiverId());
+			if (TypeMessage.TEXT.getType().equals(kindMessage.getUsersChat().getType())) {
+				boolean status = ChatDAO.sendMessage(usersChat);
+				if (status) {
+					sendMessage(usersChat.getSenderId(), usersChat.getReceiverId());
+				} else {
+					notifySendFail(userSession, usersChat.getContent());
+				}
 			} else {
-				notifySendFail(userSession, usersChat.getContent());
+				sendMessage(usersChat.getSenderId(), usersChat.getReceiverId());
 			}
 		}
 	}
@@ -55,18 +60,18 @@ public class Server {
 	public void handleError(Throwable t) {
 
 	}
-	
-	public void sendMessage (int senderId,int receiverId) {
+
+	public void sendMessage(int senderId, int receiverId) {
 		users.forEach(session -> {
-			if ((int)session.getUserProperties().get("id") == receiverId) {
+			if ((int) session.getUserProperties().get("id") == receiverId) {
 				try {
 					session.getBasicRemote().sendText("{\"notification\": \"hasNewMessage\"}");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
-			
-			if ((int)session.getUserProperties().get("id") == senderId) {
+
+			if ((int) session.getUserProperties().get("id") == senderId) {
 				try {
 					session.getBasicRemote().sendText("{\"notification\": \"sendSuccessfull\"}");
 				} catch (IOException e) {
@@ -75,10 +80,11 @@ public class Server {
 			}
 		});
 	}
-	
-	public void notifySendFail (Session session,String contentMessage) {
+
+	public void notifySendFail(Session session, String contentMessage) {
 		try {
-			session.getBasicRemote().sendText("{\"notification\": \"sendFail\",\"content\": \"" + contentMessage +"\"}");
+			session.getBasicRemote()
+					.sendText("{\"notification\": \"sendFail\",\"content\": \"" + contentMessage + "\"}");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -104,7 +110,7 @@ public class Server {
 		}
 	}
 
-	private class KindMessage {
+	public static class KindMessage {
 		private String kind;
 		private UsersChat usersChat;
 		private int session;

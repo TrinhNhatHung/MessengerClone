@@ -3,10 +3,19 @@
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
+<%
+    User withUser = (User)request.getAttribute("withUser");
+    
+	String title = "Messenger";
+    if (withUser != null) { 
+    	title = withUser.getUsername() + " | " + title;
+    	session.setAttribute("withUser", withUser.getId());
+    }
+%>
 <head>
  <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title><%=title %></title>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -26,6 +35,9 @@
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <script src="views/js/ListContact.jsx" type="text/babel"></script>
     <script src="views/js/Messages.jsx" type="text/babel"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.css" integrity="sha512-WEQNv9d3+sqyHjrqUZobDhFARZDko2wpWdfcpv44lsypsSuMO0kHGd3MQ8rrsBn/Qa39VojphdU6CMkpJUmDVw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.js" integrity="sha512-C1zvdb9R55RAkl6xCLTPt+Wmcz6s+ccOvcr6G57lbm8M2fbgn2SUjUJbQ13fEyjuLViwe97uJvwa1EUf4F1Akw==" crossorigin="anonymous"></script>
 </head>
 <body>
 <%
@@ -62,8 +74,10 @@
             </div>
             <div class="bottom-bar">
                 <button class="addcontact">
-                    <i class="fa fa-user-plus fa-fw" aria-hidden="true"></i>
-                    <span>Add contact</span>
+                    <a href="<%=request.getContextPath()%>/addContact">
+                    	<i class="fa fa-user-plus fa-fw" aria-hidden="true"></i>
+                        <span>Add contact</span>
+                    </a>
                 </button>
                 <button class="settings">
                      <a href="<%=request.getContextPath()%>/setting">
@@ -73,26 +87,32 @@
                 </button>
             </div>
         </div>
-        <div class="content">
+        <div class="content" id="content">
             <div class="contact-profile">
                 <%
-                
-                	 User withUser = (User)request.getAttribute("withUser");
-                     String withUserProfile = "views/images/avatar-default.png";
-                	 if (withUser.getProfile() != null){
-                		withUserProfile = "avatar/" + withUser.getProfile();
+                	 String withUserName = "";
+                	 String withUserProfile = "";               	
+                	 if (withUser != null){
+                        withUserProfile = "views/images/avatar-default.png";
+                       	if (withUser.getProfile() != null){
+                       		withUserProfile = "avatar/" + withUser.getProfile();
+                       	}
+                       	withUserName = withUser.getUsername();
                 	 }
                 %>
                 <img src="<%=withUserProfile%>" alt="">
-                <p>${withUser.username}</p>
+                <p><%=withUserName%></p>
             </div>
-            <div class="messages" id="messages">
+            <div class="messages image-link" id="messages">
 
             </div>
             <div class="message-input">
                 <div class="wrap">
-                    <input type="text" placeholder="Write your message..." spellcheck="false">
-                    <i class="fa fa-paperclip attachment" aria-hidden="true"></i>
+                    <input name="text" type="text" placeholder="Write your message..." spellcheck="false">                 
+                    <form id="message-form" action="<%=request.getContextPath()%>/send-message" method="post" enctype="multipart/form-data">
+                        <i class="fa fa-paperclip attachment attachment-file" aria-hidden="true"></i>
+                        <input name="file" class="input-file" type="file" multiple>                                       
+                    </form>
                     <button class="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
                 </div>
             </div>
@@ -102,6 +122,24 @@
         $(".expand-button").click(function() {
             $(".profile").toggleClass("expanded");
             $(".contacts").toggleClass("expanded");
+        });
+        
+        $(document).ready(function() {
+            $('.image-link').magnificPopup({
+                type: 'image',
+                delegate: 'a.image-send',
+                gallery: {
+                    enabled: true
+                },
+            });
+        });
+        
+        $('.attachment-image').on('click', (event) => {
+            $('.input-image').trigger('click');
+        });
+
+        $('.attachment-file').on('click', (event) => {
+            $('.input-file').trigger('click');
         });
         
         setTimeout(function(){
@@ -118,29 +156,50 @@
         
         window.onload = function() {
             let messageInput = localStorage.getItem("inputMessage");
-            if (name !== null) {
-            	$('.message-input input').val(messageInput);
-            	localStorage.removeItem("inputMessage");
-            }
-        }
+            let messageNeededSend= localStorage.getItem("MessageNeededSend");
+            
+            
+            	setTimeout(function(){
+                    if ('<%=session.getAttribute("FileNeededSend")%>' != 'null'){
+                    	sendMessage ('<%=session.getAttribute("FileNeededSend")%>');
+                    	<%
+                    		session.removeAttribute("FileNeededSend");
+                    	%>
+                    }
+                    
+            		if (messageNeededSend != null) {
+            		    sendMessage (messageNeededSend);
+            	 	    localStorage.removeItem("MessageNeededSend");           	
+                    } else {
+                    	$('.message-input input').val(messageInput);
+                    }
+                    localStorage.removeItem("inputMessage");
+                }, 300);
+            	                       
+        }        
+        
     </script>
     
     <script>
 		var listContactJson = '${listItemChats}';
 		var listContact = JSON.parse(listContactJson);
+
+		if ('<%=withUser%>' == 'null'){
+			$('#content').addClass('disabled');
+		};		
 		var listMessagesJson = '${listUserChats}';
 		var listMessages = JSON.parse(listMessagesJson);
 		
 		const currentUserProfile = '${currentUser.profile}';
 		const withUserProfile = '${withUser.profile}';
 		const currentId = ${currentUser.id};
-		const withId = ${withUser.id};
+		const withId = <%= withUser== null ? 0 : withUser.getId()%>;
 	</script>
 	
     <script type="text/babel">
 		  $('.search input').on('input', function(event) { 
                  let textSearch = $(event.target).val();
-                 textSearch = textSearch.trim() ; 
+                 textSearch = textSearch.trim(); 
 				 let listContactSearch = listContact.filter(function(contact) { 
 							let username = contact.user.username; 
 							if (username.includes(textSearch)) { 
@@ -237,31 +296,55 @@
 					 senderId : '${currentUser.id}',
 					 receiverId : '${withUser.id}',
 					 content : content,
-					 time : nowMillis
+					 time : nowMillis,
+					 type : 'text'
 				 }
 			}
 			let message = JSON.stringify(msgObj);
 			return message;
 		}
 		
+		function hasFileAttach (){
+			if ($('.input-file')[0].files.length > 0) {
+			     return true;
+			}			
+			
+			return false;
+		}
+		
 		 $('.submit').click(function() {	
 			   let message = getMessage ();
-			   if (message != undefined) {
-	               sendMessage(message);
-				   $(".message-input input").val('');
-			   }
+			   if (hasFileAttach() == true){
+                    if (message != undefined) {
+						localStorage.setItem("MessageNeededSend", message);
+					}
+			   		$('#message-form').trigger('submit');
+			   } else {
+			   		if (message != undefined) {
+	                    sendMessage(message);
+				        $(".message-input input").val('');
+			         }
+			   }					 
 	     });
 		 
 		 $(window).on('keydown', function(e) {
 	            if (e.which == 13) {	            	
 	            	let message = getMessage ();
-					if (message != undefined) {
-	                     sendMessage(message);
-						 $(".message-input input").val('');
-			        }
+			        if (hasFileAttach() == true){
+                       if (message != undefined) {
+						  localStorage.setItem("MessageNeededSend", message);
+					   }
+			   		   $('#message-form').trigger('submit');
+			        } else {
+			   		   if (message != undefined) {
+	                      sendMessage(message);
+				          $(".message-input input").val('');
+			           }
+			        }	
+				
 	                return false;
 	            }
-	      });	
+	     });	
     </script>
 </body>
 </html>
