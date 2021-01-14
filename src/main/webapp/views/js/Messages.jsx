@@ -47,7 +47,7 @@ function Message(props) {
         return (
             <li className={kind}>
                 <img src={srcProfile} />
-                <a href={srcImage} className="image-message">
+                <a href={srcImage} className="image-send">
                     <img src={srcImage} alt="" className="image-message" />
                 </a>
                 <Error error={props.message.isError} />
@@ -60,7 +60,7 @@ function Message(props) {
         return (
             <li className={kind}>
                 <img src={srcProfile} />
-                <a href={srcFile} className="file-send"><i class="fa fa-file" aria-hidden="true"></i> {nameFileBeforeUpload}</a>
+                <a href={srcFile} className="file-send" download={nameFileBeforeUpload}><i class="fa fa-file" aria-hidden="true"></i>{nameFileBeforeUpload}</a>
                 <Error error={props.message.isError} />
             </li>
         );

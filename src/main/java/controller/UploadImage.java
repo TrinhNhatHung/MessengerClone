@@ -57,16 +57,18 @@ public class UploadImage  extends HttpServlet{
 							fileItem.write(file);
 							User user = User.builder().profile(id + ".png").id(id).build();
 							UserDAO.update(user);
-							resp.sendRedirect(req.getContextPath() + "/setting?uploadAvatar=true");
+							session.setAttribute("uploadAvatar", true);
 						} catch (Exception e) {
+							session.setAttribute("uploadAvatar", false);
 							e.printStackTrace();
-							resp.sendRedirect(req.getContextPath() + "/setting?uploadAvatar=false");
 						}
 					}
 				}
 			}
 		} catch (FileUploadException e) {
+			session.setAttribute("uploadAvatar", false);
 			e.printStackTrace();
 		}
+		resp.sendRedirect(req.getContextPath() + "/setting");
 	}
 }

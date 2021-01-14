@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import dao.UserDAO;
 import model.User;
 
@@ -43,6 +45,7 @@ public class SettingController extends HttpServlet {
 		int id = (int) session.getAttribute("id");
 		String username = req.getParameter("username");
 		String password = req.getParameter("password");
+		String passwordSHA256 = DigestUtils.sha256Hex(password);
 		String gender = req.getParameter("gender");
 		String dateOfBirthStr = req.getParameter("date_of_birth");
 		DateFormat format = new SimpleDateFormat("dd/MM/yy");
@@ -60,13 +63,14 @@ public class SettingController extends HttpServlet {
 		String phone = req.getParameter("phone");
 		String email = req.getParameter("email");
 		
-		User user = User.builder().id(id).username(username).password(password).gender(gender).address(address).country(country)
+		User user = User.builder().id(id).username(username).password(passwordSHA256).gender(gender).address(address).country(country)
 				         .city(city).phone(phone).email(email).dateOfBirth(dateOfBirth).build();
 		boolean status = UserDAO.update(user);
 		if (status == true) {
-			resp.sendRedirect(req.getContextPath() + "/setting");
+			session.setAttribute("updateInfo", true);
 		} else {
-			resp.sendRedirect(req.getContextPath() + "/setting?updateInfo=false");
+			session.setAttribute("updateInfo", false);
 		}
+		resp.sendRedirect(req.getContextPath() + "/setting");
 	}
 }

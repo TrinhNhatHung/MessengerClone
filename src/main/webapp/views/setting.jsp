@@ -6,7 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <title>${currentUser.username}</title>
-<link rel="stylesheet" href="views/css/jquery-ui.css">
+<link rel="stylesheet" href="views/vendors/css/jquery-ui.css">
 <link
 	href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
 	rel="stylesheet" id="bootstrap-css">
@@ -36,7 +36,7 @@
 
 <link rel="stylesheet" href="views/css/setting.css">
 
-<link rel="stylesheet" href="views/css/notify.css">
+<link rel="stylesheet" href="views/vendors/css/notify.css">
 
 <script src="https://unpkg.com/react@17/umd/react.production.min.js"
 	crossorigin></script>
@@ -44,6 +44,7 @@
 	src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"
 	crossorigin></script>
 <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+<script src="views/vendors/js/sha256.js"></script>
 </head>
 <body>
 	<div class="frame">
@@ -162,17 +163,17 @@
 							</colgroup>
 							<tr class="old-pass-row">
 								<td class="label"><label for="">Password</label></td>
-								<td><input type="password" class="old-pass"><span
+								<td><input type="password" class="old-pass" required><span
 									class="error"></span></td>
 							</tr>
 							<tr class="new-pass-row">
 								<td class="label"><label for="">New password</label></td>
-								<td><input type="password" name="password" class="new-pass"><span
+								<td><input type="password" name="password" class="new-pass" required><span
 									class="error"></span></td>
 							</tr>
 							<tr class="retype-new-pass-row">
 								<td class="label"><label for="">Retype password</label></td>
-								<td><input type="password" class="retype-new-pass"><span
+								<td><input type="password" class="retype-new-pass" required><span
 									class="error"></span></td>
 							</tr>
 						</table>
@@ -263,16 +264,24 @@
 	<script src="views/js/setting.js"></script>
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-	<script src="views/js/notify.js"></script>
+	<script src="views/vendors/js/notify.js"></script>
 	<script>
-		if ('false' == '<%=request.getParameter("updateInfo")%>') {
-			alert("Update failed");
-		}		
+	    <%  	        
+	    	Object updateInfo = session.getAttribute("updateInfo");	 	        
+	        session.removeAttribute("updateInfo");	        
+	    %>
+		if ('false' == '<%=updateInfo == null ? "null" :(boolean)updateInfo%>') {
+			notify('error', 'Error', 'Update failed.');
+		}	
+		
+		if ('true' == '<%=updateInfo == null ? "null" :(boolean)updateInfo%>') {
+			notify('success', 'Success', 'Update successed.');
+		}
 		 $('.setting form').submit(function() {
 	            let oldPass = $('.change-pass-form .old-pass').val();
 	            let newPass = $('.change-pass-form .new-pass').val();
 	            let retypePass = $('.change-pass-form .retype-new-pass').val();
-	            if (oldPass != '<%=currentUser.getPassword()%>') {
+	            if (SHA256(oldPass) != '<%=currentUser.getPassword()%>') {
 						$('.change-pass-form .old-pass-row .error').html(
 								'* Not correct');
 						$('.change-pass-form .retype-new-pass-row .error')
@@ -304,11 +313,16 @@
 			 $('#set-avatar').trigger('submit');
 		 }
 		 
-		 if ('false' == '<%=request.getParameter("uploadAvatar")%>'){
+		 <%
+	    	Object uploadAvatar = session.getAttribute("uploadAvatar");
+	        session.removeAttribute("uploadAvatar");
+	    %>
+		 
+		 if ('false' == '<%=uploadAvatar == null ? "null" :(boolean)uploadAvatar%>'){
 			 notify('error', 'Error', 'Update avatar failed.');
 		 } 
 		 
-		 if ('true' == '<%=request.getParameter("uploadAvatar")%>'){
+		 if ('true' == '<%=uploadAvatar == null ? "null" :(boolean)uploadAvatar%>'){
 			 notify('success', 'Success', 'Update avatar successed.');
 		 }
 	</script>

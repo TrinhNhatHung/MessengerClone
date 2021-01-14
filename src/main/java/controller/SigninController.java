@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import dao.UserDAO;
 import model.User;
 
@@ -31,15 +33,15 @@ public class SigninController extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String username = req.getParameter("username");
 		String password = req.getParameter("password");
+		String passwordSHA256 = DigestUtils.sha256Hex(password);
 		HttpSession session = req.getSession();
-			User user = UserDAO.checkLogin(username, password);
+			User user = UserDAO.checkLogin(username, passwordSHA256);
 			if (user != null) {
 				session.setAttribute("username", user.getUsername());
 				session.setAttribute("id", user.getId());
 				resp.sendRedirect(req.getContextPath() + "/home");
 			} else {
 				req.setAttribute("username", username);
-				req.setAttribute("password", password);
 				RequestDispatcher rd = req.getRequestDispatcher("/views/signin.jsp?invalid=true");
 				rd.forward(req, resp);
 			}			

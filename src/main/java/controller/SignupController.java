@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import dao.UserDAO;
 import model.User;
 
@@ -31,11 +33,12 @@ public class SignupController extends HttpServlet{
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String name = req.getParameter("name");
 		String password = req.getParameter("password");
+		String passwordSHA256 = DigestUtils.sha256Hex(password);
 		String email = req.getParameter("email");
 		String gender = req.getParameter("gender");
 		String phone = req.getParameter("phonenumber");
 		
-		User user = User.builder().username(name).password(password).email(email).gender(gender).phone(phone).build();
+		User user = User.builder().username(name).password(passwordSHA256).email(email).gender(gender).phone(phone).build();
 		
 		User newUser = UserDAO.register(user);
 		if (newUser != null) {
