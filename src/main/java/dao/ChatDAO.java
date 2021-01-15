@@ -75,6 +75,11 @@ public class ChatDAO {
 					if (TypeMessage.IMAGE.getType().equals(resultSet.getString("type"))) {
 						type = TypeMessage.IMAGE;
 					}
+					
+					if (TypeMessage.FILE.getType().equals(resultSet.getString("type"))) {
+						type = TypeMessage.FILE;
+					}
+					
 					itemChats.add(new ItemChat(user,content , kindLastMessageItemChat,statusMessage , time, type));
 				}
 			}

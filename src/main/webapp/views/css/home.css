@@ -1,7 +1,6 @@
 body {
     display: flex;
     align-items: center;
-    justify-content: center;
     min-height: 100vh;
     font-family: "proxima-nova", "Source Sans Pro", sans-serif;
     font-size: 1em;
@@ -10,6 +9,19 @@ body {
     text-rendering: optimizeLegibility;
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
     -webkit-font-smoothing: antialiased;
+}
+
+.none {
+    display: none !important;
+}
+
+i.expand-toggled {
+    -moz-transform: scaleY(-1);
+    -o-transform: scaleY(-1);
+    -webkit-transform: scaleY(-1);
+    transform: scaleY(-1);
+    filter: FlipH;
+    -ms-filter: "FlipH";
 }
 
 .clearfix::after {
@@ -24,14 +36,14 @@ body {
 }
 
 .frame {
-    width: 80%;
-    height: 92vh;
+    width: 100%;
+    height: 99.2vh;
     background: #E6EAEA;
 }
 
 .frame .sidepanel {
     float: left;
-    width: 23%;
+    width: 20%;
     height: 100%;
     background: #2c3e50;
     color: #f5f5f5;
@@ -326,8 +338,8 @@ body {
 }
 
 .frame .content {
-    float: right;
-    width: 77%;
+    float: left;
+    width: 60%;
     height: 100%;
     overflow: hidden;
     position: relative;
@@ -522,4 +534,155 @@ body {
 
 .frame .content .message-input .wrap button:focus {
     outline: none;
+}
+
+.detail-contact {
+    float: left;
+    width: 20%;
+    height: 100%;
+    background-color: white;
+    position: relative;
+    overflow-y: scroll;
+}
+
+.detail-contact::-webkit-scrollbar {
+    width: 7px;
+    background: transparent;
+}
+
+.detail-contact::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.detail-contact .wrap {
+    height: 30%;
+    width: 100%;
+    position: relative;
+}
+
+.detail-contact img.with-user-avatar {
+    width: 105px;
+    height: 105px;
+    border-radius: 50%;
+    position: relative;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+.detail-contact .wrap span {
+    position: absolute;
+    right: 37%;
+    bottom: 45%;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #95a5a6;
+    border: 3px solid white;
+    z-index: 1;
+}
+
+.detail-contact .wrap span.online {
+    background: #2ecc71;
+}
+
+.detail-contact .wrap p {
+    display: inline;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+.detail-contact p.name {
+    font-size: 120%;
+    font-weight: bold;
+    top: 65%;
+}
+
+.detail-contact p.status-active {
+    font-size: 98%;
+    top: 79%;
+    color: #65676B;
+}
+
+.detail-contact .about {
+    margin-top: 3%;
+}
+
+.detail-contact .about .list-group-item {
+    cursor: pointer;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    margin: 2px 5px;
+}
+
+.detail-contact .about .list-group-item:hover {
+    background-color: #E6EAEA;
+}
+
+.detail-contact .about .list-group-item i.fa-chevron-down {
+    float: right;
+    font-size: small;
+}
+
+.detail-contact .about .expanded-info .item,
+.detail-contact .about .expanded-file .item {
+    cursor: pointer;
+    height: 35px;
+    border-radius: 5px;
+    margin: 2px 5px;
+    position: relative;
+}
+
+.detail-contact .about .expanded-info .item:hover,
+.detail-contact .about .expanded-file .item:hover {
+    background-color: #E6EAEA;
+}
+
+.detail-contact .about .expanded-info .item i {
+    width: 10px;
+    margin-left: 8%;
+    position: relative;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+.detail-contact .about .expanded-info .item p {
+    display: inline-block;
+    margin-left: 10px;
+    position: relative;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+.detail-contact .about .expanded-file .item a {
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+    padding-left: 8%;
+    padding-top: 8px;
+    text-decoration: none;
+    color: #32465a;
+}
+
+.detail-contact .about .expanded-photo {
+    width: 100%;
+}
+
+.detail-contact .about .expanded-photo .items {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.detail-contact .about .expanded-photo .item {
+    width: calc(100%/2);
+    height: 150px;
+    padding: 2px;
+    overflow: hidden;
+}
+
+.detail-contact .about .expanded-photo img {
+    width: 100%;
+    height: 100%;
 }

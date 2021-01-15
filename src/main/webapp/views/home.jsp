@@ -1,3 +1,5 @@
+<%@page import="utils.ReadProperties"%>
+<%@page import="java.util.Properties"%>
 <%@page import="model.User"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
@@ -35,6 +37,8 @@
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <script src="views/js/ListContact.jsx" type="text/babel"></script>
     <script src="views/js/Messages.jsx" type="text/babel"></script>
+    <script src="views/js/SharedFile.jsx" type="text/babel"></script>
+    <script src="views/js/SharedPhoto.jsx" type="text/babel"></script>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.css" integrity="sha512-WEQNv9d3+sqyHjrqUZobDhFARZDko2wpWdfcpv44lsypsSuMO0kHGd3MQ8rrsBn/Qa39VojphdU6CMkpJUmDVw==" crossorigin="anonymous" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.js" integrity="sha512-C1zvdb9R55RAkl6xCLTPt+Wmcz6s+ccOvcr6G57lbm8M2fbgn2SUjUJbQ13fEyjuLViwe97uJvwa1EUf4F1Akw==" crossorigin="anonymous"></script>
@@ -117,39 +121,58 @@
                 </div>
             </div>
         </div>
-    </div>
-    <script>
-        $(".expand-button").click(function() {
-            $(".profile").toggleClass("expanded");
-            $(".contacts").toggleClass("expanded");
-        });
-        
-        $(document).ready(function() {
-            $('.image-link').magnificPopup({
-                type: 'image',
-                delegate: 'a.image-send',
-                gallery: {
-                    enabled: true
-                },
-            });
-        });
-        
-        $('.attachment-image').on('click', (event) => {
-            $('.input-image').trigger('click');
-        });
+        <div class="detail-contact">
+            <div class="wrap">
+                <span class="status online"></span>
+                <img src="<%=withUserProfile%>" alt="" class="with-user-avatar">
+                <p class="name"><%=withUserName%></p>
+                <p class="status-active">Online</p>
+            </div>
+            <div class="about">
+                <ul class="list-group">
 
-        $('.attachment-file').on('click', (event) => {
-            $('.input-file').trigger('click');
-        });
-        
-        setTimeout(function(){
-        	$("#messages").animate({
-                scrollTop: $('#messages').prop("scrollHeight")
-            }, 1);
-        }, 200);
-       
-        	
-           
+                    <li class="list-group-item expand-btn-info">
+                        Info
+                        <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                    </li>
+                    <div class="expanded-info none">
+                        <div class="item">
+                            <i class="fa fa-intersex" aria-hidden="true"></i>
+                            <p>${withUser.gender}</p>
+                        </div>
+                        <div class="item">
+                            <i class="fa fa-envelope" aria-hidden="true"></i>
+                            <p>${withUser.email}</p>
+                        </div>
+                        <div class="item">
+                            <i class="fa fa-phone" aria-hidden="true"></i>
+                            <p>${withUser.phone}</p>
+                        </div>
+                    </div>
+
+
+                    <li class="list-group-item expand-btn-file">
+                        Shared file
+                        <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                    </li>
+                    <div class="expanded-file none" id="shared-file">
+                        
+                    </div>
+                    
+                    
+                    <li class="list-group-item expand-btn-photo">
+                        Shared photo
+                        <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                    </li>
+                    <div class="expanded-photo none" id="shared-photo">
+                       
+                    </div>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="views/js/home.js"></script>
+    <script>
         window.onbeforeunload = function() {
         	localStorage.setItem("inputMessage", $('.message-input input').val());
         }
@@ -183,12 +206,26 @@
     <script>
 		var listContactJson = '${listItemChats}';
 		var listContact = JSON.parse(listContactJson);
-
+		
 		if ('<%=withUser%>' == 'null'){
 			$('#content').addClass('disabled');
 		};		
 		var listMessagesJson = '${listUserChats}';
 		var listMessages = JSON.parse(listMessagesJson);
+		
+		var listSharedPhoto = listMessages.filter ((message)=> {
+			if (message.type == 'image'){
+				return true;
+			}
+			return false;
+		});
+		
+		var listSharedFile = listMessages.filter ((message)=> {
+			if (message.type == 'file'){
+				return true;
+			}
+			return false;
+		});
 		
 		const currentUserProfile = '${currentUser.profile}';
 		const withUserProfile = '${withUser.profile}';
@@ -208,13 +245,26 @@
 				 }); 
          		 ReactDOM.render( <ListContact contacts={listContactSearch} withId={withId} onlineUsers={onlineUsers} />, document.getElementById("contacts")); 
          });
-         
+	
+		ReactDOM.render(
+        <SharedFile files={listSharedFile}/>, document.getElementById("shared-file")); 
+
+		ReactDOM.render(
+        <SharedPhoto photos={listSharedPhoto}/>, document.getElementById("shared-photo"));   		
+     
          ReactDOM.render(
         <Messages messages={listMessages} currentUserProfile={currentUserProfile} withUserProfile={withUserProfile} currentId={currentId} withId={withId} />, document.getElementById("messages"));
     </script>
     
+    <%
+    	Properties properties = ReadProperties.getProperties();
+    	String domain = properties.getProperty("domain");
+    	String port = properties.getProperty("port");
+    	String folder = properties.getProperty("folder");
+    %>
+    
     <script type="text/babel">
-    	var websocket = new WebSocket("ws://localhost:8080/webchat/server");
+    	var websocket = new WebSocket("ws://<%=domain%>:<%=port%>/<%=folder%>/server");
     	websocket.onopen = function() {
 			processOpen();
 		};
@@ -250,6 +300,13 @@
 							}
 				}); 
          		 ReactDOM.render( <ListContact contacts={listContactSearch} withId={withId} onlineUsers={onlineUsers} />, document.getElementById("contacts")); 
+				 if (!onlineUsers.includes(withId)){
+				 	  $('.detail-contact .wrap .status-active').html('Offline');
+                      $('.detail-contact .wrap .status').removeClass('online');
+				 } else {
+				 	  $('.detail-contact .wrap .status-active').html('Online');
+                      $('.detail-contact .wrap .status').addClass('online');
+				 }
 			}
 			
 			if (messageObj.notification == 'hasNewMessage' || messageObj.notification == 'sendSuccessfull'){
