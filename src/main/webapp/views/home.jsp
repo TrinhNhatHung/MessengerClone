@@ -13,6 +13,12 @@
     	title = withUser.getUsername() + " | " + title;
     	session.setAttribute("withUser", withUser.getId());
     }
+    
+    long messageUnread = (long)request.getAttribute("messageUnread");
+    String lastNameUnread = (String)request.getAttribute("lastNameUnread");
+    if (messageUnread != 0) {
+    	title = "(" + messageUnread + ") " + title; 
+    }
 %>
 <head>
  <meta charset="UTF-8">
@@ -173,6 +179,18 @@
     </div>
     <script type="text/javascript" src="views/js/home.js"></script>
     <script>
+	    if (<%=messageUnread%> != 0){
+	    	var toggle = true;
+	    	setInterval(function(){ 
+	    		if (toggle == true) {
+	    			document.title = '<%=lastNameUnread%> has messaged you';
+	    			toggle = false;
+	    		} else {
+	    			document.title = '<%=title%>';
+	    			toggle = true;
+	    		}
+	    	}, 1000);
+	    }
         window.onbeforeunload = function() {
         	localStorage.setItem("inputMessage", $('.message-input input').val());
         }

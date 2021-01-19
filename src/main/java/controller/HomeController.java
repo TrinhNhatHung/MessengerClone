@@ -3,6 +3,7 @@ package controller;
 import java.io.IOException;
 import static java.util.Comparator.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -18,8 +19,10 @@ import dao.ChatDAO;
 import dao.MessageDAO;
 import dao.UserDAO;
 import model.ItemChat;
+import model.ItemChat.StatusMessage;
 import model.User;
 import model.UsersChat;
+import model.UsersChat.TypeMessage;
 
 @WebServlet(urlPatterns = "/home")
 public class HomeController extends HttpServlet {
@@ -58,6 +61,14 @@ public class HomeController extends HttpServlet {
 		
 		MessageDAO.updateStatus(id, with);
 		
+		long messageUnread = MessageDAO.getUnRead(id);
+		req.setAttribute("messageUnread", messageUnread);
+		
+	    if (messageUnread != 0) {
+	    	String lastNameUnread = MessageDAO.getLastNameUnread(id);
+	    	req.setAttribute("lastNameUnread", lastNameUnread);
+	    }
+		
 		User withUser = UserDAO.getUser(with);
 		req.setAttribute("withUser", withUser);
 		
@@ -65,6 +76,7 @@ public class HomeController extends HttpServlet {
 		usersChats.sort(nullsFirst(comparing(UsersChat::getTime)));
 		String listUserChats = gson.toJson(usersChats);
 		req.setAttribute("listUserChats", listUserChats);
+		
 	
 		RequestDispatcher rd = req.getRequestDispatcher("/views/home.jsp");
 		rd.forward(req, resp);

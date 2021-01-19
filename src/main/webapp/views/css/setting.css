@@ -62,6 +62,7 @@ body {
     color: rgb(83, 83, 83);
     font-weight: bold;
     font-size: 1.23em;
+    white-space: nowrap;
 }
 
 .frame .side-panel .profile i {
@@ -358,3 +359,57 @@ body {
     right: 5px;
     transform: translate(0, -50%);
 }
+
+/* responsive code */
+
+@media screen and (max-width: 1366px) {
+    .side-panel .profile {
+        height: 37% !important;
+    }
+    .side-panel .profile .avatar img {
+        height: 100px;
+        width: 100px;
+    }
+}
+
+@media screen and (max-width: 1280px) {
+    .side-panel .profile {
+        height: 34% !important;
+    }
+    .side-panel .profile .avatar img {
+        height: 90px;
+        width: 90px;
+    }
+    .side-panel .profile p {
+        font-size: 1.16em !important;
+    }
+}
+
+@media screen and (max-width: 1165px) {
+    .side-panel .profile {
+        height: 33% !important;
+    }
+    .side-panel .profile .avatar img {
+        height: 83px;
+        width: 83px;
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .side-panel .profile .avatar img {
+        height: 80px;
+        width: 80px;
+    }
+}
+
+@media screen and (max-height: 680px) {
+    .side-panel .profile .avatar img {
+        height: 90px;
+        width: 90px;
+    }
+    .side-panel .profile p {
+        font-size: 1.16em !important;
+    }
+}
+
+/*--- Responsive Code ---*/

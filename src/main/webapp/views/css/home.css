@@ -318,6 +318,8 @@ i.expand-toggled {
     width: 100%;
     height: 100%;
     padding: 10px 0;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .frame .sidepanel .bottom-bar button:focus {
@@ -594,6 +596,8 @@ i.expand-toggled {
 }
 
 .detail-contact p.name {
+    white-space: nowrap;
+    overflow: hidden;
     font-size: 120%;
     font-weight: bold;
     top: 65%;
@@ -686,3 +690,105 @@ i.expand-toggled {
     width: 100%;
     height: 100%;
 }
+
+.detail-contact .about .expanded-photo img:hover {
+    opacity: 0.6;
+}
+
+/* responsive code */
+
+@media screen and (max-width: 1440px) {
+    .detail-contact .wrap img.with-user-avatar {
+        height: 90px;
+        width: 90px;
+    }
+    .detail-contact .wrap {
+        height: 28%;
+    }
+    .detail-contact .wrap span {
+        bottom: 47%;
+    }
+    .detail-contact .wrap p.name {
+        top: 60%;
+    }
+    .detail-contact .wrap p.status-active {
+        top: 74%;
+    }
+}
+
+@media screen and (max-width: 1280px) {
+    p {
+        font-size: 90%;
+    }
+    .detail-contact .wrap p.name {
+        font-size: 110%;
+    }
+}
+
+@media screen and (max-width: 1165px) {
+    .detail-contact .wrap img.with-user-avatar {
+        height: 80px;
+        width: 80px;
+    }
+    .detail-contact .wrap {
+        height: 26%;
+    }
+    .detail-contact .wrap span {
+        bottom: 49%;
+    }
+    .detail-contact .wrap p.name {
+        top: 55%;
+    }
+    .detail-contact .wrap p.status-active {
+        top: 69%;
+    }
+}
+
+@media screen and (max-width: 966px) {
+    .detail-contact .wrap span {
+        bottom: 46%;
+    }
+    .contacts li.contact .wrap img {
+        width: 35px !important;
+        height: 35px !important;
+    }
+    .bottom-bar a span {
+        font-size: 90%;
+    }
+}
+
+@media screen and (max-height: 685px) {
+    .detail-contact .wrap img.with-user-avatar {
+        height: 95px;
+        width: 95px;
+    }
+    .detail-contact .wrap span {
+        bottom: 44%;
+    }
+}
+
+@media screen and (max-height: 655px) {
+    .detail-contact .wrap span {
+        bottom: 45%;
+    }
+}
+
+@media screen and (max-height: 630px) {
+    .detail-contact .wrap span {
+        bottom: 42%;
+    }
+}
+
+@media screen and (max-height: 605px) {
+    .detail-contact .wrap span {
+        bottom: 40%;
+    }
+}
+
+@media screen and (max-height: 580px) {
+    .detail-contact .wrap span {
+        bottom: 38%;
+    }
+}
+
+/*--- Responsive Code ---*/
